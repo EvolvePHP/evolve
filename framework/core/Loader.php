@@ -21,7 +21,7 @@ class Loader {
 	private $autoload;
 
 	/**
-	 * @var Framework directory
+	 * @var Framework directory (will be overwritted, if is set as argument)
 	 */
 	private $workdir = constant('EVOLVE_DIR');
 
@@ -33,6 +33,9 @@ class Loader {
 		if(isset($arg['autoload'])) {
 			$this->autoload = $arg['autoload'];
 		}
+		if(isset($arg['directory'])) {
+			$this->workdir = $arg['workdir'];
+		}
 	}
 
 	/**
@@ -40,10 +43,26 @@ class Loader {
 	 * @param name of class
 	 */
 	public function Load($class) {
-		if(file_exists(self::$workdir.'/libs/'.$name.'/'.$name.'.php')) {
-			require_once $workdir.'/libs/'.$name.'/'.$name.'.php';
+		if($workdir == constant('EVOLVE_DIR')) {
+			/* Will load core function */
+			if(file_exists(self::$workdir.'/libs/'.$name.'.php')) {
+				require_once self::$workdir.'/libs/'.$name.'.php';
+			} elseif(file_exists(self::$workdir.'/app_classes/'.$name.'/'.$name.'.php')) {
+				require_once self::$workdir.'/app_classes/'.$name.'/'.$name.'.php';
+			} else {
+				throw new EvolveException('1000');
+			}
 		} else {
-			echo 'Error!!';
+			/* Will load app class (model, view, controller) */
+			if(strpos($class,'Controller') !== FALSE) {
+				$type = 'controller';
+			} elseif(strpos($class,'Model') !== FALSE) {
+				$type = 'model';
+			} elseif(strpos($class,'View') !== FALSE) {
+				$type = 'view';
+			} else {
+				throw new EvolveException('1000');
+			}
 		}
 	}
 

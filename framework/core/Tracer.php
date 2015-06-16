@@ -2,8 +2,8 @@
 /**
  * ███████╗██╗   ██╗ ██████╗ ██╗    ██╗   ██╗███████╗
  * ██╔════╝██║   ██║██╔═══██╗██║    ██║   ██║██╔════╝
- * █████╗  ██║   ██║██║   ██║██║    ██║   ██║█████╗  
- * ██╔══╝  ╚██╗ ██╔╝██║   ██║██║    ╚██╗ ██╔╝██╔══╝  
+ * █████╗  ██║   ██║██║   ██║██║    ██║   ██║█████╗
+ * ██╔══╝  ╚██╗ ██╔╝██║   ██║██║    ╚██╗ ██╔╝██╔══╝
  * ███████╗ ╚████╔╝ ╚██████╔╝███████╗╚████╔╝ ███████╗
  * ╚══════╝  ╚═══╝   ╚═════╝ ╚══════╝ ╚═══╝  ╚══════╝
  *
@@ -18,10 +18,10 @@ class EvolveException extends Exception {}
 
 class Tracer {
 	/**
-	 * After construct class this function will clear output and show error message
+	 * Clear output, show BSOD and kill itself
 	 * @param exception info
 	 */
-	public function __constuct($e) {
+	public static function Show($params) {
 		// Initialize BSOD module and execute
 		BSOD::Show(array(
 			'error_code' => $params['code'],
@@ -29,7 +29,8 @@ class Tracer {
 			'show_debug' => constant('EVOLVE_INDEV')
 		);
 
-		// Stop application
+		// Clear output and stop application
+		ob_clean();
 		exit;
 	}
 }
@@ -68,7 +69,6 @@ class BSOD {
 			$output = 'Standard BSOD';
 		}
 
-		ob_clean();
 		echo $output;
 	}
 }
