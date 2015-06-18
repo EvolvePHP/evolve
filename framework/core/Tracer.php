@@ -18,6 +18,11 @@ class EvolveException extends Exception {}
 
 class Tracer {
 	/**
+	 * @var empty crash dump
+	 */
+	private $dump = array();
+
+	/**
 	 * Clear output, show BSOD and kill itself
 	 * @param exception info
 	 */
@@ -26,12 +31,30 @@ class Tracer {
 		BSOD::Show(array(
 			'error_code' => $params['code'],
 			'error_line' => $params['line'],
-			'show_debug' => constant('EVOLVE_INDEV')
+			'show_debug' => EVOLVE_INDEV
 		);
 
 		// Clear output and stop application
 		ob_clean();
 		exit;
+	}
+
+	/**
+	 * Add new line onto Crash Dump
+	 * @param severity
+	 * @param content
+	 */
+	public static function Log($component,$severity,$content) {
+		$severity_label = $severity;
+
+		$dump[] = '[ '.$severity_label.' ] '$component+' > '+$content;
+	}
+
+	/**
+	 * Save content of dump into a file
+ 	 */
+	public static function Save() {
+		print_r(self::$dump);
 	}
 }
 
@@ -43,7 +66,7 @@ class BSOD {
 		/* Framework's core errors 1XXX */
 		'1000' => 'Unknown core error',
 		'1001' => 'Cannot load library or plugin - file not exists. Maybe you are trying to use class with uncorrect name.',
-		'1002' => 'Cannot access required scripts, because your server has bad access rights'
+		'1002' => 'Cannot access required scripts (probably problem with access rights)'
 
 		/* Database errors 2XXX */
 	);

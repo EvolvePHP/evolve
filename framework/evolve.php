@@ -55,8 +55,10 @@ if(constant('EVOLVE_MODE') == 'complete' OR constant('EVOLVE_MODE') == 'developm
 	}
 }
 
+Tracer::Log('core','info','Core initialized successfully');
+
 /* Initialize loader */
-function LoadClass($class) {
+function __autoload($class) {
 	$loader = new Loader();
 	try {
 		$loader->Load($class);
@@ -64,4 +66,3 @@ function LoadClass($class) {
 		Tracer::Show();
 	}
 }
-spl_autoload_register(LoadClass);
