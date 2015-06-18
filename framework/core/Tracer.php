@@ -32,7 +32,7 @@ class Tracer {
 			'error_code' => $params['code'],
 			'error_line' => $params['line'],
 			'show_debug' => EVOLVE_INDEV
-		);
+		));
 
 		// Clear output and stop application
 		ob_clean();
@@ -47,7 +47,7 @@ class Tracer {
 	public static function Log($component,$severity,$content) {
 		$severity_label = $severity;
 
-		$dump[] = '[ '.$severity_label.' ] '$component+' > '+$content;
+		$dump[] = '[ '.$severity_label.' ] '.$component.' > '.$content;
 	}
 
 	/**
