@@ -18,15 +18,13 @@ class EvolveException extends Exception {}
 
 class Tracer {
 	/**
-	 * @var empty crash dump
-	 */
-	private $dump = array();
-
-	/**
 	 * Clear output, show BSOD and kill itself
 	 * @param exception info
 	 */
 	public static function Show($params) {
+		// Clean output
+		ob_clean();
+
 		// Initialize BSOD module and execute
 		BSOD::Show(array(
 			'error_code' => $params['code'],
@@ -34,27 +32,8 @@ class Tracer {
 			'show_debug' => EVOLVE_INDEV
 		));
 
-		// Clear output and stop application
-		ob_clean();
+		// Stop application
 		exit;
-	}
-
-	/**
-	 * Add new line onto Crash Dump
-	 * @param severity
-	 * @param content
-	 */
-	public static function Log($component,$severity,$content) {
-		$severity_label = $severity;
-
-		$dump[] = '[ '.$severity_label.' ] '.$component.' > '.$content;
-	}
-
-	/**
-	 * Save content of dump into a file
- 	 */
-	public static function Save() {
-		print_r(self::$dump);
 	}
 }
 
@@ -62,11 +41,12 @@ class BSOD {
 	/**
 	 * @var messages for error codes
 	 */
-	protected $error_messages = array(
+	protected static $error_messages = array(
 		/* Framework's core errors 1XXX */
 		'1000' => 'Unknown core error',
 		'1001' => 'Cannot load library or plugin - file not exists. Maybe you are trying to use class with uncorrect name.',
-		'1002' => 'Cannot access required scripts (probably problem with access rights)'
+		'1002' => 'Cannot access required scripts (probably problem with access rights)',
+		'1003' => 'Bad class type'
 
 		/* Database errors 2XXX */
 	);
@@ -92,6 +72,14 @@ class BSOD {
 			$output = 'Standard BSOD';
 		}
 
-		echo $output;
+		if($_GET['api_mode'] == 'true') {
+			echo json_encode(array(
+				'status' => 'error',
+				'error_code' => $params['error_code'],
+				'error_comment' => self::$error_messages[$params['error_code']]
+			),JSON_PRETTY_PRINT);
+		} else {
+			echo self::$error_messages[$params['error_code']];
+		}
 	}
 }

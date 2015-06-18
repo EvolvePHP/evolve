@@ -31,3 +31,4 @@ $timer = microtime(true)-$start_time;
 $timer = round($timer, 10);
 
 /* Initialite development features */
+echo 'Done in '.$timer.' seconds';

@@ -23,7 +23,16 @@ class Loader {
 	/**
 	 * @var Framework directory
 	 */
-	private $workdir;
+	private $workdir = EVOLVE_DIR;
+
+	/**
+	 * @var Array with known core modules
+	 */
+	private $known_modules = array(
+		'TemplateEngine' => '/core/Templates.php',
+		'Router' => '/core/Router.php',
+		'Security' => '/core/Security.php'
+	);
 
 	/**
 	 * Prepare variables and others
@@ -33,16 +42,6 @@ class Loader {
 		if(isset($arg['autoload'])) {
 			$this->autoload = $arg['autoload'];
 		}
-
-		if(isset($arg['directory'])) {
-			$this->workdir = $arg['workdir'];
-		} else {
-			$this->workdir = EVOLVE_DIR;
-		}
-
-		Tracer::Log('loader','info','New instance of loader was created');
-		Tracer::Log('loader','info','Working directory: '+$this->workdir);
-		Tracer::Log('loader','info','Autoload libraries: '+$this->autoload);
 	}
 
 	/**
@@ -50,29 +49,47 @@ class Loader {
 	 * @param name of class
 	 */
 	public function Load($class) {
-		if($workdir == EVOLVE_DIR) {
-			/* Will load core function */
-			$file_to_load = self::$workdir.'/libs/'.$name.'.php';
+		if(isset($this->known_modules[$class])) {
+			/* If loader recognize this class, get path from array */
+			$file = EVOLVE_DIR.$this->known_modules[$class];
 		} else {
-			/* Will load app class (model, view, controller) */
-			if(strpos($class,'Controller') !== FALSE) {
-				$type = 'controller';
-			} elseif(strpos($class,'Model') !== FALSE) {
-				$type = 'model';
-			} elseif(strpos($class,'View') !== FALSE) {
-				$type = 'view';
+			if(file_exists(EVOLVE_DIR.'/core/'.$class.'.php')) {
+				/* Search in core modules */
+				$file = EVOLVE_DIR.'/core/'.$class.'.php';
+			} elseif(file_exists(EVOLVE_DIR.'/libs/'.$class.'.php')) {
+				/* Search in libs */
+				$file = EVOLVE_DIR.'/libs/'.$class.'.php';
 			} else {
-				Tracer::Log('loader','crit_error','Bad class type specified - application was stopped');
-				throw new EvolveException('1000');
+				/* It's not an library, search in app files */
+				if($_GET['api_mode'] == 'true') {
+					if(file_exists(EVOLVE_APPDIR.'/'.$class.'/'.$class.'.class.php')) {
+						$file = EVOLVE_APPDIR.'/'.$class.'/'.$class.'.class.php';
+					} else {
+						throw new EvolveException('1001');
+					}
+				} else {
+					/* At first, framework need to know type of class */
+					if(strpos($class,'Controller') !== FALSE) {
+						$type = 'controllers';
+					} elseif(strpos($class,'Model') !== FALSE) {
+						$type = 'models';
+					} elseif(strpos($class,'View') !== FALSE) {
+						$type = 'views';
+					} else {
+						throw new EvolveException('1003');
+					}
+
+					if(file_exists(EVOLVE_APPDIR.'/'.$type.'/'.$class.'/'.$class.'.class.php')) {
+						$file = EVOLVE_APPDIR.'/'.$type.'/'.$class.'/'.$class.'.class.php';
+					} else {
+						throw new EvolveException('1001');
+					}
+				}
 			}
 		}
 
-		/* Load specified class file */
-		if(file_exists($file_to_load)) {
-			require_once $file_to_load;
-		} else {
-			Tracer::Log('loader','crit_error','Class '.$name.' cannot be loaded - application was stopped');
-			throw new EvolveException('1000');
-		}
+		/* File exists, try to load it */
+		require_once($file);
+
 	}
 }
