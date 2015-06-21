@@ -31,8 +31,9 @@ $timer = microtime(true)-$start_time;
 $timer = round($timer, 10);
 
 $cache = new Cache();
-//$cache->write('test','Obsah cachovaného souboru');
-echo $cache->read('test');
+//$cache->write('Hello world','Cached hello world! :) '.rand(1000,9999));
+echo $cache->read('Hello world');
+//$cache->delete('Hello world');
 
 /* Initialite development features */
 echo 'Done in '.round($timer,4).' seconds';

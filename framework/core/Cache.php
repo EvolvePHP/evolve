@@ -57,12 +57,14 @@ class Cache {
          if(time() <= $cached_file_info['devalidate']) {
            return file_get_contents($this->cache_dir.'/'.$cached_file_info['hash']);
          } else {
-           $this->devalidateCache($name);
+           $this->delete($name);
            return 'cache_invalid';
          }
        } else {
          return 'cache_not_exists';
        }
+     } else {
+       return 'cache_not_exists';
      }
    }
 
@@ -72,8 +74,11 @@ class Cache {
     * @param cache content
     */
    public function write($name,$content) {
-     $hash = sha1(time().rand(1000,9999));
+     if(isset($this->index_array[$name])) {
+       $this->delete($name);
+     }
 
+     $hash = sha1(time().rand(1000,9999));
      $this->index_array[$name] = array('hash' => $hash, 'devalidate' => time() + $this->cache_devalidate);
 
      $file = fopen($this->cache_dir.'/'.$hash,'w');
@@ -87,7 +92,8 @@ class Cache {
     * Make cache invalid
     * @param name of cache to invalidate
     */
-   public function devalidateCache($name) {
+   public function delete($name) {
+     unlink($this->cache_dir.'/'.$this->index_array[$name]['hash']);
      unset($this->index_array[$name]);
      self::saveCachedList($this->index_array,$this->cache_index);
    }
