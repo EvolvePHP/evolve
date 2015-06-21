@@ -31,7 +31,8 @@ class Loader {
 	private $known_modules = array(
 		'TemplateEngine' => '/core/Templates.php',
 		'Router' => '/core/Router.php',
-		'Security' => '/core/Security.php'
+		'Security' => '/core/Security.php',
+		'Cache' => '/core/Cache.php'
 	);
 
 	/**

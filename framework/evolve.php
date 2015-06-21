@@ -32,12 +32,20 @@ define('EVOLVE_VER','0.0.1_indev');
 		define('EVOLVE_APPDIR','./app');
 	}
 
+	/* Set cache directory */
+	if(isset($ecore_arg['cache_dir'])) {
+		define('EVOLVE_CACHEDIR',$ecore_arg['cache_dir']);
+	} else {
+		define('EVOLVE_CACHEDIR','./cache');
+	}
+
 	/* Set settings file path */
 	if(isset($ecore_arg['settings_path'])) {
 		define('EVOLVE_SETTINGS',$ecore_arg['settings_path']);
 	} else {
 		define('EVOLVE_SETTINGS','./framework/settings/settings.json');
 	}
+
 	/* Set development mode */
 	if(isset($ecore_arg['devmode'])) {
 		define('EVOLVE_INDEV',$ecore_arg['devmode']);

@@ -30,5 +30,9 @@ include('app/loader.php');
 $timer = microtime(true)-$start_time;
 $timer = round($timer, 10);
 
+$cache = new Cache();
+//$cache->write('test','Obsah cachovaného souboru');
+echo $cache->read('test');
+
 /* Initialite development features */
-echo 'Done in '.$timer.' seconds';
+echo 'Done in '.round($timer,4).' seconds';
