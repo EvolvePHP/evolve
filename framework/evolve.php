@@ -8,7 +8,7 @@
  * ╚══════╝  ╚═══╝   ╚═════╝ ╚══════╝ ╚═══╝  ╚══════╝
  *
  * Evolve Framework
- * Copyright (c) Evolve Team
+ * Copyright (c) Vojtěch Hutla, Marian Abaffy
  *
  * Licensed under MIT
  * evolve.github.io
