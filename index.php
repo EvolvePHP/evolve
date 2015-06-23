@@ -36,4 +36,4 @@ echo $cache->read('Hello world');
 //$cache->delete('Hello world');
 
 /* Initialite development features */
-echo 'Done in '.round($timer,4).' seconds';
+//echo 'Done in '.round($timer,4).' seconds';

@@ -42,6 +42,11 @@ class Cache {
      $this->cache_dir = EVOLVE_CACHEDIR.'/Cached';
      $this->cache_index = EVOLVE_CACHEDIR.'/CacheIndex.json';
      $this->cache_devalidate = '86400';
+
+     if(!file_exists($this->cache_index)) {
+       file_put_contents($this->cache_index, '');
+     }
+
      $this->index_array = self::getCachedList($this->cache_index);
    }
 
