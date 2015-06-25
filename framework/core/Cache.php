@@ -41,7 +41,7 @@ class Cache {
    public function __construct() {
      $this->cache_dir = EVOLVE_CACHEDIR.'/Cached';
      $this->cache_index = EVOLVE_CACHEDIR.'/CacheIndex.json';
-     $this->cache_devalidate = '86400';
+     $this->cache_devalidate = Settings::get('cache_expiration');
 
      if(!file_exists($this->cache_index)) {
        file_put_contents($this->cache_index, '');

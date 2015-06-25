@@ -56,22 +56,6 @@ class BSOD {
 	 * @param array with arguments (error code, line, ...)
 	 */
 	public static function Show($params) {
-		if(isset($params['show_debug']) AND $params['show_debug'] == 'true') {
-			/* Show debug info */
-			$output = 'BSOD with debug info';
-
-			/* Get error code comment */
-			if(isset(self::$error_messages[$params['code']])) {
-				$comment = self::$error_messages[$params['code']];
-			} else {
-				$comment = 'Unknown error';
-			}
-
-		} else {
-			/* Show error message only */
-			$output = 'Standard BSOD';
-		}
-
 		if($_GET['api_mode'] == 'true') {
 			echo json_encode(array(
 				'status' => 'error',
@@ -79,6 +63,22 @@ class BSOD {
 				'error_comment' => self::$error_messages[$params['error_code']]
 			),JSON_PRETTY_PRINT);
 		} else {
+			if(isset($params['show_debug']) AND $params['show_debug'] == 'true') {
+				/* Show debug info */
+				$output = 'BSOD with debug info';
+
+				/* Get error code comment */
+				if(isset(self::$error_messages[$params['code']])) {
+					$comment = self::$error_messages[$params['code']];
+				} else {
+					$comment = 'Unknown error';
+				}
+
+			} else {
+				/* Show error message only */
+				$output = 'Standard BSOD';
+			}
+			
 			echo self::$error_messages[$params['error_code']];
 		}
 	}
