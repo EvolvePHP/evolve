@@ -32,7 +32,8 @@ class Loader {
 		'TemplateEngine' => '/core/Templates.php',
 		'Router' => '/core/Router.php',
 		'Security' => '/core/Security.php',
-		'Cache' => '/core/Cache.php'
+		'Cache' => '/core/Cache.php',
+		'API' => '/core/ApiBuilder.php'
 	);
 
 	/**
@@ -61,30 +62,22 @@ class Loader {
 				/* Search in libs */
 				$file = EVOLVE_DIR.'/libs/'.$class.'.php';
 			} else {
-				/* It's not an library, search in app files */
-				if($_GET['api_mode'] == 'true') {
-					if(file_exists(EVOLVE_APPDIR.'/'.$class.'/'.$class.'.class.php')) {
-						$file = EVOLVE_APPDIR.'/'.$class.'/'.$class.'.class.php';
-					} else {
-						throw new EvolveException('1001');
-					}
+				/* It's not an library, search in app files
+				 * At first, framework need to know type of class */
+				if(strpos($class,'Controller') !== FALSE) {
+					$type = 'controllers';
+				} elseif(strpos($class,'Model') !== FALSE) {
+					$type = 'models';
+				} elseif(strpos($class,'View') !== FALSE) {
+					$type = 'views';
 				} else {
-					/* At first, framework need to know type of class */
-					if(strpos($class,'Controller') !== FALSE) {
-						$type = 'controllers';
-					} elseif(strpos($class,'Model') !== FALSE) {
-						$type = 'models';
-					} elseif(strpos($class,'View') !== FALSE) {
-						$type = 'views';
-					} else {
-						throw new EvolveException('1003');
-					}
+					throw new EvolveException('1003');
+				}
 
-					if(file_exists(EVOLVE_APPDIR.'/'.$type.'/'.$class.'/'.$class.'.class.php')) {
-						$file = EVOLVE_APPDIR.'/'.$type.'/'.$class.'/'.$class.'.class.php';
-					} else {
-						throw new EvolveException('1001');
-					}
+				if(file_exists(EVOLVE_APPDIR.'/'.$type.'/'.$class.'/'.$class.'.class.php')) {
+					$file = EVOLVE_APPDIR.'/'.$type.'/'.$class.'/'.$class.'.class.php';
+				} else {
+					throw new EvolveException('1001');
 				}
 			}
 		}

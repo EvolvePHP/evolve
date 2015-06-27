@@ -14,26 +14,17 @@
  * evolve.github.io
  */
 
-/* Only in dev versions */
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-/* ==================== */
+ class API {
+   public function status($status) {
+     $this->response('status',$status);
+   }
 
-/* Start time counter */
-$start_time = microtime(true);
+   public function response($type,$content) {
+     $this->response_array[$type] = $content;
+   }
 
-/* Load application */
-include('framework/evolve.php');
-include('app/loader.php');
-
-/* Stop time counter */
-$timer = microtime(true)-$start_time;
-$timer = round($timer, 10);
-
-$api = new API();
-$api->status('ok');
-$api->response('hello_world','Hello world!');
-$api->execute();
-
-/* Initialite development features */
-//echo 'Done in '.round($timer,4).' seconds';
+   public function execute() {
+     echo json_encode($this->response_array,JSON_PRETTY_PRINT);
+     exit();
+   }
+ }
